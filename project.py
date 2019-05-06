@@ -1,4 +1,9 @@
-import csv
+#%% Image processing
+import cv2
+import glob2
+
+#%%
+
 import math
 from tensorflow import keras
 
@@ -15,7 +20,48 @@ import matplotlib.pyplot as plt
 
 import h5py #to save data
 
-# Import TrashNet dataset
+#%% Import TrashNet dataset
+def display_rgb_image(image):
+	plt.imshow(image)
+	plt.show()
+
+def load_blur_img(path, size):
+	"""
+	path - Path to image.
+	size - (x, y) tuple.
+	"""
+	img = cv2.imread(path)
+
+	if img is None:
+		print(path)
+
+	img = cv2.blur(img,(5,5))
+	img = cv2.resize(img, size)
+	return img
+
+def load_img_class(class_paths, class_lable, class_size, img_size):
+	x = list()
+	y = list()
+
+	for path in class_paths:
+		img = load_blur_img(path, img_size)
+
+		if img is not None:
+			x.append(img)
+			y.append(class_lable)
+
+	return np.asarray(x), np.asarray(y)
+
+def load_data(img_size, class_size):
+	plastic_paths = glob2.glob('./dataset/plastic/*.jpg')
+	x_plastic, y_plastic = load_img_class(plastic_paths, 0, class_size, img_size)
+
+	return x_plastic, y_plastic
+
+
+#%%
+
+
 
 # Class names for different classes
 class_names = ['glass', 'paper', 'cardboard', 'plastic', 'metal', 'trash']
