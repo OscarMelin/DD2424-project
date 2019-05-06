@@ -1,0 +1,9 @@
+name: dd2424
+dependencies:
+  - python=3.7
+  - numpy
+  - tensorflow=
+  - scikit-learn
+  - matplotlib
+  - pandas
+  - keras
