@@ -39,7 +39,7 @@ def load_blur_img(path, size):
 	img = cv2.resize(img, size)
 	return img
 
-def load_img_class(class_paths, class_lable, class_size, img_size):
+def load_img_class(class_paths, class_lable, img_size):
 	x = list()
 	y = list()
 
@@ -52,9 +52,9 @@ def load_img_class(class_paths, class_lable, class_size, img_size):
 
 	return np.asarray(x), np.asarray(y)
 
-def load_data(img_size, class_size):
+def load_data(img_size):
 	plastic_paths = glob2.glob('./dataset/plastic/*.jpg')
-	x_plastic, y_plastic = load_img_class(plastic_paths, 0, class_size, img_size)
+	x_plastic, y_plastic = load_img_class(plastic_paths, 0, img_size)
 
 	return x_plastic, y_plastic
 
