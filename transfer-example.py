@@ -52,14 +52,6 @@ for layer in model.layers[:20]:
 for layer in model.layers[20:]:
     layer.trainable=True
 
-datagen = dict(
-    rotation_range=40,
-    width_shift_range=0.2,
-    height_shift_range=0.2,
-    shear_range=0.2,
-    zoom_range=0.2,
-    horizontal_flip=True,
-    fill_mode='nearest')
 #%%
 
 datagen = dict(
