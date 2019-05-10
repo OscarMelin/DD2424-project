@@ -145,16 +145,18 @@ train_acc  = history.history['acc']
 
 print('A graph displaying the loss over training epochs')
 plt.plot(train_loss)
+plt.title('Training loss')
 plt.ylabel('Loss')
 plt.xlabel('Epoch number')
 plt.show()
-plt.savefig('Data/train_loss.png')
+plt.savefig('graphs/train_loss.png')
 
 print('A graph displaying the accuracy over training epochs')
 plt.plot(train_acc)
+plt.title('training accuracy')
 plt.ylabel('Accuracy')
 plt.xlabel('Epoch number')
-plt.savefig('Data/train_acc.png')
+plt.savefig('graphs/train_acc.png')
 plt.show()
 
 #Get accuracy for every class during tests

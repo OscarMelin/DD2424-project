@@ -29,7 +29,11 @@ from keras.optimizers import Adam
 
 base_model=MobileNet(weights='imagenet',include_top=False) #imports the mobilenet model and discards the last 1000 neuron layer.
 
+for layer in base_model.layers:
+    layer.trainable = False
+
 x=base_model.output
+
 x=GlobalAveragePooling2D()(x)
 x=Dense(1024,activation='relu')(x) #we add dense layers so that the model can learn more complex functions and classify for better results.
 x=Dense(1024,activation='relu')(x) #dense layer 2
@@ -46,23 +50,12 @@ model=Model(inputs=base_model.input,outputs=preds)
 
 
 #%%
-
+"""
 for layer in model.layers[:20]:
     layer.trainable=False
 for layer in model.layers[20:]:
     layer.trainable=True
-
-
-datagen = dict(
-    rotation_range=40,
-    width_shift_range=0.2,
-    height_shift_range=0.2,
-    shear_range=0.2,
-    zoom_range=0.2,
-    horizontal_flip=True,
-    fill_mode='nearest')
-#%% 
-
+"""
 
 datagen = dict(
         rotation_range=40,
@@ -104,9 +97,39 @@ model.compile(optimizer='Adam',loss='categorical_crossentropy',metrics=['accurac
 step_size_train = train_generator.n // train_generator.batch_size
 step_size_validation = validation_generator.n // train_generator.batch_size
 
-model.fit_generator(generator=train_generator,
+history = model.fit_generator(generator=train_generator,
                    steps_per_epoch=step_size_train,
                    validation_data = validation_generator, 
                    validation_steps = step_size_validation,
-                   epochs=5)
+                   epochs=2)
 
+#Get history of loss and accuracy during training and display it with graphs
+train_loss = history.history['loss']
+train_acc  = history.history['acc']
+val_loss = history.history['val_loss']
+val_acc = history.history['val_acc']
+
+print('train_loss:', train_loss)
+print('train_acc:', train_acc)
+print('val_loss:', val_loss)
+print('val_acc:', val_acc)
+
+print('A graph displaying the loss over training epochs')
+plt.plot(train_loss)
+plt.plot(val_loss)
+plt.title('Training loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch number')
+plt.legend(['train', 'val'], loc='upper left')
+plt.show()
+plt.savefig('graphs/train_loss.png')
+
+print('A graph displaying the accuracy over training epochs')
+plt.plot(train_acc)
+plt.plot(val_acc)
+plt.title('training accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch number')
+plt.legend(['train', 'val'], loc='upper left')
+plt.savefig('graphs/train_acc.png')
+plt.show()
