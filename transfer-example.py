@@ -55,14 +55,32 @@ for layer in model.layers[20:]:
 
 #%%
 
-train_datagen=ImageDataGenerator(preprocessing_function=preprocess_input) #included in our dependencies
+datagen = dict(
+        rotation_range=40,
+        width_shift_range=0.2,
+        height_shift_range=0.2,
+        shear_range=0.2,
+        zoom_range=0.2,
+        horizontal_flip=True,
+		validation_split=0.13,
+        fill_mode='nearest')
 
-train_generator=train_datagen.flow_from_directory('./dataset/', # this is where you specify the path to the main data folder
+train_datagen = ImageDataGenerator(preprocessing_function=preprocess_input, **datagen) #included in our dependencies
+
+train_generator = train_datagen.flow_from_directory('./dataset/', # this is where you specify the path to the main data folder
                                                  target_size=(224,224),
                                                  color_mode='rgb',
                                                  batch_size=32,
                                                  class_mode='categorical',
-                                                 shuffle=True)
+                                                 shuffle=True,
+												 subset='training')
+validation_generator = train_datagen.flow_from_directory('./dataset/', # this is where you specify the path to the main data folder
+                                                 target_size=(224,224),
+                                                 color_mode='rgb',
+                                                 batch_size=train_generator.batch_size,
+                                                 class_mode='categorical',
+                                                 shuffle=True,
+												 subset='validation')
 
 
 #%%
@@ -72,8 +90,12 @@ model.compile(optimizer='Adam',loss='categorical_crossentropy',metrics=['accurac
 # loss function will be categorical cross entropy
 # evaluation metric will be accuracy
 
-step_size_train=train_generator.n//train_generator.batch_size
+step_size_train = train_generator.n // train_generator.batch_size
+stet_size_validation = validation_generator.n // train_generator.batch_size
+
 model.fit_generator(generator=train_generator,
                    steps_per_epoch=step_size_train,
+                   validation_data = validation_generator, 
+                   validation_steps = stet_size_validation,
                    epochs=5)
 
