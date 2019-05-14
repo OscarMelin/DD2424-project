@@ -86,6 +86,16 @@ validation_generator = train_datagen.flow_from_directory('./dataset/train',
                                                  shuffle=True,
 												 subset='validation')
 
+test_generator = train_datagen.flow_from_directory('./dataset/test',
+                                                 target_size=(224,224),
+                                                 color_mode='rgb',
+                                                 #batch_size=train_generator.batch_size,
+                                                 class_mode='categorical',
+                                                 shuffle=True
+                                                 )
+
+
+
 
 #%%
 
@@ -97,11 +107,15 @@ model.compile(optimizer='Adam',loss='categorical_crossentropy',metrics=['accurac
 step_size_train = train_generator.n // train_generator.batch_size
 step_size_validation = validation_generator.n // train_generator.batch_size
 
+
 history = model.fit_generator(generator=train_generator,
                    steps_per_epoch=step_size_train,
                    validation_data = validation_generator, 
                    validation_steps = step_size_validation,
-                   epochs=2)
+                   epochs=1)
+
+test_loss, test_acc = model.evaluate_generator(generator=test_generator,
+steps=test_generator.n)
 
 #Get history of loss and accuracy during training and display it with graphs
 train_loss = history.history['loss']
@@ -113,6 +127,8 @@ print('train_loss:', train_loss)
 print('train_acc:', train_acc)
 print('val_loss:', val_loss)
 print('val_acc:', val_acc)
+print('test_loss:', test_loss)
+print('test_acc:', test_acc)
 
 print('A graph displaying the loss over training epochs')
 plt.plot(train_loss)
